@@ -4,7 +4,7 @@ import { ApolloServer, gql } from "apollo-server-express";
 import { typeDefs } from "./schema";
 import { resolvers } from "./resolvers";
 import cors from "cors";
-import { data } from "./data";
+import model from "./model";
 
 const app = express();
 
@@ -14,7 +14,8 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: {
-    me: data[1]
+    model,
+    me: model.data[1]
   }
 });
 

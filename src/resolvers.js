@@ -1,4 +1,4 @@
-import { data, messages } from "./data";
+import model from "./model";
 import uuidv4 from "uuid/v4";
 
 //const me = data[1];
@@ -10,19 +10,19 @@ const resolvers = {
     },
 
     user: (parent, { id }) => {
-      return data[id];
+      return model.data[id];
     },
 
     users: () => {
-      return Object.values(data);
+      return Object.values(model.data);
     },
 
     messages: () => {
-      return Object.values(messages);
+      return Object.values(model.messages);
     },
 
     message: (parent, { id }) => {
-      return messages[id];
+      return model.messages[id];
     }
   },
   // These are called default resolvers, because they work without explicit definitions
@@ -44,12 +44,12 @@ const resolvers = {
         text,
         userId: me.id
       };
-      messages[id] = message;
-      data[me.id].messageIds.push(id);
+      model.messages[id] = message;
+      model.data[me.id].messageIds.push(id);
       return message;
     },
     deleteMessage: (parent, { id }) => {
-      const { [id]: message, ...otherMessages } = messages;
+      const { [id]: message, ...otherMessages } = model.messages;
       console.log("t1: ", message);
       if (!message) {
         return false;
@@ -62,14 +62,14 @@ const resolvers = {
 
   Message: {
     user: message => {
-      return data[message.userId];
+      return model.data[message.userId];
     }
   },
 
   User: {
     messages: user => {
-      return Object.values(messages).filter(
-        message => message.userId === user.id
+      return Object.values(model.messages).filter(
+        message => model.message.userId === user.id
       );
     }
   }
