@@ -1,4 +1,3 @@
-import model from "./model";
 import uuidv4 from "uuid/v4";
 
 //const me = data[1];
@@ -9,19 +8,19 @@ const resolvers = {
       return me;
     },
 
-    user: (parent, { id }) => {
+    user: (parent, { id }, { model }) => {
       return model.data[id];
     },
 
-    users: () => {
+    users: (parent, args, { model }) => {
       return Object.values(model.data);
     },
 
-    messages: () => {
+    messages: (parent, args, { model }) => {
       return Object.values(model.messages);
     },
 
-    message: (parent, { id }) => {
+    message: (parent, { id }, { model }) => {
       return model.messages[id];
     }
   },
@@ -37,7 +36,7 @@ const resolvers = {
   //   }
 
   Mutation: {
-    createMessage: (parent, { text }, { me }) => {
+    createMessage: (parent, { text }, { me, model }) => {
       const id = uuidv4();
       const message = {
         id,
@@ -48,7 +47,7 @@ const resolvers = {
       model.data[me.id].messageIds.push(id);
       return message;
     },
-    deleteMessage: (parent, { id }) => {
+    deleteMessage: (parent, { id }, { model }) => {
       const { [id]: message, ...otherMessages } = model.messages;
       console.log("t1: ", message);
       if (!message) {
@@ -61,15 +60,15 @@ const resolvers = {
   },
 
   Message: {
-    user: message => {
+    user: (message, args, { model }) => {
       return model.data[message.userId];
     }
   },
 
   User: {
-    messages: user => {
+    messages: (user, args, { model }) => {
       return Object.values(model.messages).filter(
-        message => model.message.userId === user.id
+        message => message.userId === user.id
       );
     }
   }
